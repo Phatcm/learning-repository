@@ -17,7 +17,7 @@ resource "aws_api_gateway_method" "get_health" {
   authorization = "NONE"
 }
 
-resource "aws_api_gateway_integration" "health_integration" {
+resource "aws_api_gateway_integration" "get_health_integration" {
   rest_api_id             = aws_api_gateway_rest_api.serverless_api.id
   resource_id             = aws_api_gateway_resource.health.id
   http_method             = aws_api_gateway_method.get_health.http_method
@@ -26,7 +26,7 @@ resource "aws_api_gateway_integration" "health_integration" {
   uri                     = var.lambdaArn
 }
 
-/*
+
 #products
 resource "aws_api_gateway_resource" "products" {
   rest_api_id = aws_api_gateway_rest_api.serverless_api.id
@@ -41,9 +41,18 @@ resource "aws_api_gateway_method" "get_products" {
   authorization = "NONE"
 }
 
+resource "aws_api_gateway_integration" "get_products_integration" {
+  rest_api_id             = aws_api_gateway_rest_api.serverless_api.id
+  resource_id             = aws_api_gateway_resource.products.id
+  http_method             = aws_api_gateway_method.get_products.http_method
+  integration_http_method = "GET"
+  type                    = "AWS_PROXY"
+  uri                     = var.lambdaArn
+}
 
 
 
+/*
 #product
 resource "aws_api_gateway_resource" "product" {
   rest_api_id = aws_api_gateway_rest_api.serverless_api.id
