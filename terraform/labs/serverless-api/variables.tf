@@ -37,6 +37,11 @@ variable "runtime" {
   description = "runtime"
 }
 
+variable "lambda_handler" {
+  type = string
+  description = "lambda_handler"
+}
+
 #apigateway
 variable "apiName" {
   type        = string

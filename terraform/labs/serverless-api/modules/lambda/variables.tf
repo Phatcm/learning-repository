@@ -12,3 +12,8 @@ variable "runtime" {
   type = string
   description = "runtime"
 }
+
+variable "lambda_handler" {
+  type = string
+  description = "lambda_handler"
+}

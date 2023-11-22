@@ -17,14 +17,14 @@ module "dynamodb"{
     tableName = var.tableName
     productId = var.productId
 }
-
+*/
 module "lambda"{
     source = "./modules/lambda"
     functionName = var.functionName
     lambdaRoleArn = var.lambdaRoleArn
     runtime = var.runtime
+    lambda_handler = var.lambda_handler
 }
-*/
 
 module "apigateway"{
     source = "./modules/apigateway"
