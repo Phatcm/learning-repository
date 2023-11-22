@@ -5,10 +5,6 @@ data "archive_file" "lambda" {
     content = file("./resources/lambda_function.py")
     filename = "lambda_function.py"
   }
-  source {
-    content = file("./resources/custom_encoder.py")
-    filename = "custom_encoder.py"
-  }
 }
 
 resource "aws_lambda_function" "lambda_function" {
@@ -18,10 +14,9 @@ resource "aws_lambda_function" "lambda_function" {
   function_name = var.functionName
   role          = var.lambdaRoleArn
 
-  handler         = "lambda.handler"  # Assuming your handler function is named "handler" within "lambda.py"
+  handler         = var.lambda_handler  # SET USING TFVARS
   source_code_hash = data.archive_file.lambda.output_base64sha256
   runtime         = var.runtime
-
 }
 
 /*

@@ -11,7 +11,7 @@ provider "aws" {
   region = var.region
   profile = var.profile
 }
-
+/*
 module "dynamodb"{
     source = "./modules/dynamodb"
     tableName = var.tableName
@@ -24,6 +24,7 @@ module "lambda"{
     lambdaRoleArn = var.lambdaRoleArn
     runtime = var.runtime
 }
+*/
 
 module "apigateway"{
     source = "./modules/apigateway"

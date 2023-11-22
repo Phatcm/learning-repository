@@ -1,3 +1,5 @@
+
+/*
 resource "aws_api_gateway_rest_api" "serverless_api" {
   name        = var.apiName
   description = "This is my API for demonstration purposes"
@@ -9,6 +11,7 @@ resource "aws_api_gateway_resource" "health" {
   parent_id   = aws_api_gateway_rest_api.serverless_api.root_resource_id
   path_part   = "health"
 }
+
 
 resource "aws_api_gateway_method" "get_health" {
   rest_api_id   = aws_api_gateway_rest_api.serverless_api.id
@@ -25,6 +28,7 @@ resource "aws_api_gateway_integration" "get_health_integration" {
   type                    = "AWS_PROXY"
   uri                     = var.lambdaArn
 }
+
 
 
 #products
@@ -52,7 +56,7 @@ resource "aws_api_gateway_integration" "get_products_integration" {
 
 
 
-/*
+
 #product
 resource "aws_api_gateway_resource" "product" {
   rest_api_id = aws_api_gateway_rest_api.serverless_api.id
@@ -88,19 +92,19 @@ resource "aws_api_gateway_method" "delete_product" {
   authorization = "NONE"
 }
 
-*/
 
-/*
 resource "aws_api_gateway_deployment" "prod" {
   rest_api_id = aws_api_gateway_rest_api.serverless_api.id
 
+  triggers = {
+    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.serverless_api.body))
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
   depends_on = [
-    aws_api_gateway_method.get_health,
-    aws_api_gateway_method.get_products,
-    aws_api_gateway_method.get_product,
-    aws_api_gateway_method.post_product,
-    aws_api_gateway_method.patch_product,
-    aws_api_gateway_method.delete_product
+    aws_api_gateway_method.get_health
   ]
 }
 
