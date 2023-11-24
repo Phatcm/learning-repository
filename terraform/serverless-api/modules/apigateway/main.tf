@@ -1,5 +1,5 @@
 
-/*
+
 resource "aws_api_gateway_rest_api" "serverless_api" {
   name        = var.apiName
   description = "This is my API for demonstration purposes"
@@ -95,7 +95,7 @@ resource "aws_api_gateway_method" "delete_product" {
 
 resource "aws_api_gateway_deployment" "prod" {
   rest_api_id = aws_api_gateway_rest_api.serverless_api.id
-
+  
   triggers = {
     redeployment = sha1(jsonencode(aws_api_gateway_rest_api.serverless_api.body))
   }
@@ -113,4 +113,3 @@ resource "aws_api_gateway_stage" "example" {
   rest_api_id   = aws_api_gateway_rest_api.serverless_api.id
   stage_name    = "prod"
 }
-*/
