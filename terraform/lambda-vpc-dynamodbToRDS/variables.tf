@@ -21,22 +21,25 @@ variable "productId" {
 
 #vpc
 variable "vpc_name" {
-type = string
+  type = string
 }
 
 variable "vpc_cidr" {
-type = string
+  type = string
 }
 
 variable "azs" {
-type = list(string)
+  type = list(string)
 }
 
 variable "public_subnets" {
-type = list(string)
+  type = list(string)
 }
 variable "private_subnets" {
-type = list(string)
+  type = list(string)
+}
+variable "database_subnets" {
+  type = list(string)
 }
 
 #rds
@@ -68,4 +71,25 @@ variable "username" {
 variable "password" {
   type        = string
   description = "The password to use for the database"
+}
+
+#lambda
+variable "iamRoleName" {
+  type = string
+}
+
+variable "policies_list" {
+  type = list(string)
+}
+
+variable "functionName" {
+  type = string
+}
+
+variable "lambdaHandler" {
+  type = string
+}
+
+variable "runtime" {
+  type = string
 }

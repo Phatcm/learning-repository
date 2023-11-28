@@ -1,7 +1,3 @@
-resource "aws_eip" "nat" {
-  count = 2
-}
-
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
@@ -11,10 +7,9 @@ module "vpc" {
   azs             = var.azs
   public_subnets  = var.public_subnets
   private_subnets = var.private_subnets
+  database_subnets = var.database_subnets
 
-  enable_nat_gateway = true
-  reuse_nat_ips       = true
-  external_nat_ip_ids = "${aws_eip.nat.*.id}"
+  create_database_subnet_group = true
 }
 
 /*
@@ -54,75 +49,35 @@ resource "aws_vpc_endpoint_route_table_association" "route-table-connection" {
 */
 
 #security group
+module "security_group" {
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "~> 4"
+  name = "database-sg"
+  description = "database security group"
+  vpc_id = module.vpc.vpc_id
 
-#webserver_sg
-resource "aws_security_group" "webserver_sg" {
-  name_prefix = "webserver_sg"
-  description = "Security group for web server"
-  vpc_id      = module.vpc.vpc_id
-
-  ingress {
-    description      = "http access"
-    from_port        = 80
-    to_port          = 80
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    description      = "https access"
-    from_port        = 443
-    to_port          = 443
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    description      = "ssh access"
-    from_port        = 22
-    to_port          = 22
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = -1
-    cidr_blocks      = ["0.0.0.0/0"]
-  }
-
-  tags   = {
-    Name = "webserver security group"
-  }
-}
-
-# database_security_group
-resource "aws_security_group" "database_sg" {
-  name_prefix = "database_sg"
-  description = "Security group for database"
-  vpc_id      = module.vpc.vpc_id
-
-  ingress {
-    from_port   = 3306
-    to_port     = 3306
-    protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/8"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 65535
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  tags   = {
-    Name = "database security group"
-  }
+  ingress_with_cidr_blocks = [
+    {
+      from_port   = 5432
+      to_port     = 5432
+      protocol    = "tcp"
+      description = "database access from within VPC"
+      cidr_blocks = module.vpc.vpc_cidr_block
+    },
+  ]
+  egress_with_cidr_blocks = [
+    {
+      from_port   = 5432
+      to_port     = 5432
+      protocol    = "tcp"
+      description = "database access from within VPC"
+      cidr_blocks = module.vpc.vpc_cidr_block
+    },
+  ]
 }
 
 #subnet group with private subnets for database
-resource "aws_db_subnet_group" "database_group"{
-  name       = "database_group"
-  subnet_ids = module.vpc.private_subnets
+resource "aws_db_parameter_group" "parameter_group"{
+  name = "database-pg"
+  family = "postgres12"
 }

@@ -7,3 +7,4 @@ variable "productId" {
   type        = string
   description = "productId"
 }
+

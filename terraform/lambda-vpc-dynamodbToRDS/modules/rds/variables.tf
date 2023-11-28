@@ -34,10 +34,14 @@ variable "password" {
 }
 
 variable "database_sg_id" {
-  type = string
+  type = list(string)
 }
 
 
 variable "db_subnet_group_name" {
+  type = string
+}
+
+variable "parameter_group_name" {
   type = string
 }
