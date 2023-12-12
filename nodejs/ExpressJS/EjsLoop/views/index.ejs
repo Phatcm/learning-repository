@@ -1,0 +1,15 @@
+<h1>This is my test page</h1>
+
+<% questions.forEach((questions) => { %>
+    <% if(questions['user'].toLowerCase() === 'john'){ %>
+        <h2><%= questions['title'] %></h2>
+        <p><%= questions['user'] %></p>
+        <p><%= questions['votes'] %></p>
+    <% } else { %>
+        <h1>Ask by other users:</h1>
+        <h2><%= questions['title'] %></h2>
+        <p><%= questions['user'] %></p>
+        <p><%= questions['votes'] %></p>
+    <% } %>
+    
+<% }); %>
